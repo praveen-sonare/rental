@@ -52,9 +52,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean delete(int id) {
         try {
-            Optional<User> user = userRepository.findById(id);
-            if (user.isPresent())
-                userRepository.delete(user.get());
+            Optional<User> object = userRepository.findById(id);
+            if (object.isPresent())
+                userRepository.delete(object.get());
             return true;
         } catch (DataAccessException e) {
             LOGGER.info(e.getMessage());

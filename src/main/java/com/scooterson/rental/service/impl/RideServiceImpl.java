@@ -1,8 +1,8 @@
 package com.scooterson.rental.service.impl;
 
-import com.scooterson.rental.model.Customer;
-import com.scooterson.rental.repository.CustomerRepository;
-import com.scooterson.rental.service.CustomerService;
+import com.scooterson.rental.model.Ride;
+import com.scooterson.rental.repository.RideRepository;
+import com.scooterson.rental.service.RideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,38 +13,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
-    private final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
-    private final CustomerRepository repository;
+public class RideServiceImpl implements RideService {
+    private final Logger LOGGER = LoggerFactory.getLogger(RideServiceImpl.class);
+    private final RideRepository repository;
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository repository) {
+    public RideServiceImpl(RideRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Customer create(Customer object) {
-
+    public Ride create(Ride object) {
         return repository.save(object);
     }
 
     @Override
-    public Optional<Customer> find(int id) {
+    public Optional<Ride> find(int id) {
         return repository.findById(id);
     }
 
     @Override
-    public Customer findByUsername(String username) {
-        return repository.findByUsername(username);
-    }
-
-    @Override
-    public List<Customer> findAll() {
+    public List<Ride> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Customer update(int id, Customer object) {
+    public Ride update(int id, Ride object) {
         object.setId(id);
         return repository.save(object);
     }
@@ -52,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean delete(int id) {
         try {
-            Optional<Customer> object = repository.findById(id);
+            Optional<Ride> object = repository.findById(id);
             if (object.isPresent())
                 repository.delete(object.get());
             return true;

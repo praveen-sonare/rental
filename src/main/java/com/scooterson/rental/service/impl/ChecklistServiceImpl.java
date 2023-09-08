@@ -1,8 +1,8 @@
 package com.scooterson.rental.service.impl;
 
-import com.scooterson.rental.model.Customer;
-import com.scooterson.rental.repository.CustomerRepository;
-import com.scooterson.rental.service.CustomerService;
+import com.scooterson.rental.model.Checklist;
+import com.scooterson.rental.repository.ChecklistRepository;
+import com.scooterson.rental.service.ChecklistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,38 +13,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
-    private final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
-    private final CustomerRepository repository;
+public class ChecklistServiceImpl implements ChecklistService {
+    private final Logger LOGGER = LoggerFactory.getLogger(ChecklistServiceImpl.class);
+    private final ChecklistRepository repository;
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository repository) {
+    public ChecklistServiceImpl(ChecklistRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Customer create(Customer object) {
-
+    public Checklist create(Checklist object) {
         return repository.save(object);
     }
 
     @Override
-    public Optional<Customer> find(int id) {
+    public Optional<Checklist> find(int id) {
         return repository.findById(id);
     }
 
     @Override
-    public Customer findByUsername(String username) {
-        return repository.findByUsername(username);
-    }
-
-    @Override
-    public List<Customer> findAll() {
+    public List<Checklist> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Customer update(int id, Customer object) {
+    public Checklist update(int id, Checklist object) {
         object.setId(id);
         return repository.save(object);
     }
@@ -52,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean delete(int id) {
         try {
-            Optional<Customer> object = repository.findById(id);
+            Optional<Checklist> object = repository.findById(id);
             if (object.isPresent())
                 repository.delete(object.get());
             return true;

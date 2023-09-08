@@ -1,4 +1,4 @@
-CREATE TABLE "rides" (
+CREATE TABLE "ride" (
   "id" SERIAL PRIMARY KEY,
   "rider_id" int,
   "uuid" varchar(128),
@@ -50,7 +50,7 @@ CREATE TABLE "vehicle" (
   "updated_at" timestamp
 );
 
-CREATE TABLE "vehicle_check" (
+CREATE TABLE "checklist" (
   "id" int PRIMARY KEY,
   "vehicle_id" int,
   "headlight" smallint,
@@ -146,21 +146,31 @@ CREATE TABLE "user" (
   "clientOf" int
 );
 
-CREATE TABLE "business_plan" (
-  "plan_id" int PRIMARY KEY,
-  "customer_id" int NOT NULL,
-  "vehicle_type" int NOT NULL,
-  "need_picture" bool,
+CREATE TABLE "plan" (
+  "id" SERIAL PRIMARY KEY,
+  "customerId" int NOT NULL,
+  "vehicleType" int NOT NULL,
+  "needPicture" bool,
   "waiver" bool,
   "price" varchar(10),
-  "duration" varchar(16) NOT NULL
+  "period" varchar(16) NOT NULL
 );
 
-COMMENT ON COLUMN "rides"."status" IS 'Initialize, Pre Verification, InProgress, Completed, Post Verification, Checkout';
+CREATE UNIQUE INDEX ON "vehicle" ("uuid");
 
-COMMENT ON COLUMN "rides"."txn_comment" IS 'billing explanation';
+CREATE UNIQUE INDEX ON "tenant" ("username");
 
-COMMENT ON COLUMN "rides"."txn_status" IS 'Started, InProgress, Completed, Declined, Cancelled';
+CREATE UNIQUE INDEX ON "customer" ("username");
+
+CREATE UNIQUE INDEX ON "user" ("username");
+
+CREATE UNIQUE INDEX ON "plan" ("customerId", "vehicleType", "period");
+
+COMMENT ON COLUMN "ride"."status" IS 'Initialize, Pre Verification, InProgress, Completed, Post Verification, Checkout';
+
+COMMENT ON COLUMN "ride"."txn_comment" IS 'billing explanation';
+
+COMMENT ON COLUMN "ride"."txn_status" IS 'Started, InProgress, Completed, Declined, Cancelled';
 
 COMMENT ON COLUMN "vehicle"."manufac_state_user_id" IS 'Who is handling the manufac stage';
 
@@ -172,7 +182,7 @@ COMMENT ON COLUMN "vehicle"."is_available" IS 'true = available for Rent, false 
 
 COMMENT ON COLUMN "vehicle"."status" IS 'By default set to true. If deleted, set to false.';
 
-COMMENT ON COLUMN "vehicle_check"."headlight" IS '1 for "ok", 2 for "flag", 3 for "fail"';
+COMMENT ON COLUMN "checklist"."headlight" IS '1 for "ok", 2 for "flag", 3 for "fail"';
 
 COMMENT ON COLUMN "tenant"."profile_pic" IS 'Profile pic is stored in a cloud storage and refernece will be stored here';
 
@@ -196,24 +206,22 @@ COMMENT ON COLUMN "user"."user_id" IS 'voter id, SSN, FIN etc';
 
 COMMENT ON COLUMN "user"."user_id_type" IS 'voter id, SSN, FIN etc';
 
-COMMENT ON COLUMN "business_plan"."duration" IS '0-hourly, 1-daily, 2-monthly, 3-quarterly, 4-Anually, 5-Weekend, 6-Weekly';
+COMMENT ON COLUMN "plan"."period" IS '0-hourly, 1-daily, 2-monthly, 3-quarterly, 4-Anually, 5-Weekend, 6-Weekly';
 
-ALTER TABLE "rides" ADD FOREIGN KEY ("rider_id") REFERENCES "user" ("id");
+ALTER TABLE "ride" ADD FOREIGN KEY ("rider_id") REFERENCES "user" ("id");
 
-ALTER TABLE "rides" ADD FOREIGN KEY ("uuid") REFERENCES "vehicle" ("uuid");
+ALTER TABLE "ride" ADD FOREIGN KEY ("uuid") REFERENCES "vehicle" ("uuid");
 
-ALTER TABLE "rides" ADD FOREIGN KEY ("vehicle_check_before_ride") REFERENCES "vehicle_check" ("id");
+ALTER TABLE "ride" ADD FOREIGN KEY ("vehicle_check_before_ride") REFERENCES "checklist" ("id");
 
-ALTER TABLE "rides" ADD FOREIGN KEY ("vehicle_check_after_ride") REFERENCES "vehicle_check" ("id");
+ALTER TABLE "ride" ADD FOREIGN KEY ("vehicle_check_after_ride") REFERENCES "checklist" ("id");
 
 ALTER TABLE "customer" ADD FOREIGN KEY ("id") REFERENCES "tenant" ("id");
 
-ALTER TABLE "business_plan" ADD FOREIGN KEY ("customer_id") REFERENCES "customer" ("id");
+ALTER TABLE "plan" ADD FOREIGN KEY ("customerId") REFERENCES "customer" ("id");
 
 ALTER TABLE "vehicle" ADD FOREIGN KEY ("owner") REFERENCES "customer" ("id");
 
 ALTER TABLE "user" ADD FOREIGN KEY ("employeeOf") REFERENCES "customer" ("id");
 
 ALTER TABLE "user" ADD FOREIGN KEY ("clientOf") REFERENCES "customer" ("id");
-
---https://dbdiagram.io/d/64ddd08b02bd1c4a5eec5c35

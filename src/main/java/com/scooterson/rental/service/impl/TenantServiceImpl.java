@@ -52,9 +52,9 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public boolean delete(int id) {
         try {
-            Optional<Tenant> user = repository.findById(id);
-            if (user.isPresent())
-                repository.delete(user.get());
+            Optional<Tenant> object = repository.findById(id);
+            if (object.isPresent())
+                repository.delete(object.get());
             return true;
         } catch (DataAccessException e) {
             LOGGER.info(e.getMessage());

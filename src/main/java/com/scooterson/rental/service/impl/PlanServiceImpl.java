@@ -1,8 +1,8 @@
 package com.scooterson.rental.service.impl;
 
-import com.scooterson.rental.model.Customer;
-import com.scooterson.rental.repository.CustomerRepository;
-import com.scooterson.rental.service.CustomerService;
+import com.scooterson.rental.model.Plan;
+import com.scooterson.rental.repository.PlanRepository;
+import com.scooterson.rental.service.PlanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,38 +13,38 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
-    private final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
-    private final CustomerRepository repository;
+public class PlanServiceImpl implements PlanService {
+    private final Logger LOGGER = LoggerFactory.getLogger(PlanServiceImpl.class);
+    private final PlanRepository repository;
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository repository) {
+    public PlanServiceImpl(PlanRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Customer create(Customer object) {
+    public Plan create(Plan user) {
 
-        return repository.save(object);
+        return repository.save(user);
     }
 
     @Override
-    public Optional<Customer> find(int id) {
+    public Optional<Plan> find(int id) {
         return repository.findById(id);
     }
 
     @Override
-    public Customer findByUsername(String username) {
-        return repository.findByUsername(username);
+    public List<Plan> findBycustomerId(int customerId) {
+        return repository.findBycustomerId(customerId);
     }
 
     @Override
-    public List<Customer> findAll() {
+    public List<Plan> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Customer update(int id, Customer object) {
+    public Plan update(int id, Plan object) {
         object.setId(id);
         return repository.save(object);
     }
@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean delete(int id) {
         try {
-            Optional<Customer> object = repository.findById(id);
+            Optional<Plan> object = repository.findById(id);
             if (object.isPresent())
                 repository.delete(object.get());
             return true;
