@@ -8,15 +8,16 @@ import java.util.Optional;
 public interface VehicleService {
     //User find(int id);
     Optional<Vehicle> find(int id);
-    Vehicle findByuuid(String username);
+    Optional<Vehicle> findByuuid(String uuid);
 
     List<Vehicle> findAll();
 
     Vehicle create(Vehicle object);
 
-    Vehicle update(int id, Vehicle object);
+    Vehicle update(String uuid, Vehicle object);
 
     boolean delete(int id);
+    boolean delete(String uuid);
 
     boolean deleteAll();
 }

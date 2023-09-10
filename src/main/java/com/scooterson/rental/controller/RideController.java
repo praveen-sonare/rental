@@ -1,7 +1,7 @@
 package com.scooterson.rental.controller;
 
-import com.scooterson.rental.model.User;
-import com.scooterson.rental.service.UserService;
+import com.scooterson.rental.model.Ride;
+import com.scooterson.rental.service.RideService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,54 +11,39 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "user", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserController {
+@RequestMapping(path = "ride", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RideController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-    private final UserService userService;
+    private final Logger LOGGER = LoggerFactory.getLogger(RideController.class);
+    private final RideService service;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public RideController(RideService service) {
+        this.service = service;
     }
 
     @GetMapping(value= "/all")
-    public ResponseEntity<List<User>> loadAll() {
+    public ResponseEntity<List<Ride>> loadAll() {
         LOGGER.info("start loadAll users");
         try {
-            List<User> users = userService.findAll();
-            LOGGER.info("Found {} users", users.size());
-            return new ResponseEntity<>(users, HttpStatus.OK);
+            List<Ride> objects = service.findAll();
+            LOGGER.info("Found {} users", objects.size());
+            return new ResponseEntity<>(objects, HttpStatus.OK);
         } catch (DataAccessException e) {
             LOGGER.info(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    /*
-    // TO TEST with AUTH
-    @PostMapping(value= "/test")
-    public void testPost() {
-        LOGGER.info("start test users");
-    }
-
-    @PostMapping(value= "/testPrincipal")
-    public void testPost(Principal principal) {
-        principal.getName()
-        LOGGER.info("start test users");
-    }
-    */
-
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-    public ResponseEntity<User> loadOne(@PathVariable int id) {
-        LOGGER.info("start loadOne user by id: ", id);
+    public ResponseEntity<Ride> loadOne(@PathVariable int id) {
+        LOGGER.info("start loadOne Ride by id: ", id);
         try {
-            Optional<User> user = userService.find(id);
+            Optional<Ride> user = service.find(id);
             LOGGER.info("Found: {}", user);
             return new ResponseEntity<>(user.isPresent()?user.get(): null, HttpStatus.OK);
         } catch (DataAccessException e) {
@@ -68,11 +53,11 @@ public class UserController {
     }
 
     @PostMapping(value= "/create")
-    public ResponseEntity<User> create(@RequestBody User user) {
-        LOGGER.info("start creating user: ", user);
+    public ResponseEntity<Ride> create(@RequestBody Ride ride) {
+        LOGGER.info("start creating Ride: ", ride);
         try {
-            userService.create(user);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
+            service.create(ride);
+            return new ResponseEntity<>(ride, HttpStatus.CREATED);
         } catch (DataAccessException e) {
             LOGGER.info(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -80,11 +65,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<User> update(@PathVariable int id, @RequestBody User user) {
-        LOGGER.info("start update user: ", user);
+    public ResponseEntity<Ride> update(@PathVariable int id, @RequestBody Ride object) {
+        LOGGER.info("start update Ride: ", object);
         try {
-            userService.update(id, user);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            service.update(id, object);
+            return new ResponseEntity<>(object, HttpStatus.OK);
         } catch (DataAccessException e) {
             LOGGER.info(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -93,7 +78,7 @@ public class UserController {
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable int id) {
-        if (userService.delete(id))
+        if (service.delete(id))
             return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }

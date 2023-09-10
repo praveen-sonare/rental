@@ -12,7 +12,7 @@ public interface PlanService {
 
     List<Plan> findAll();
 
-    Plan create(Plan object);
+    Plan addPlan(Plan object);
 
     Plan update(int id, Plan object);
 

@@ -23,9 +23,19 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Plan create(Plan user) {
+    public Plan addPlan(Plan plan) {
+        List<Plan> plans = findBycustomerId(plan.getCustomerId());
+        for (Plan existingPlan: plans){
+            if(existingPlan.getCustomerId() == plan.getCustomerId() &&
+               existingPlan.getVehicleType() == plan.getVehicleType() &&
+               existingPlan.getPeriod() == plan.getPeriod())
+            {
+                plan.setId(existingPlan.getId());
+                return repository.save(plan);
+            }
+        }
 
-        return repository.save(user);
+        return repository.save(plan);
     }
 
     @Override

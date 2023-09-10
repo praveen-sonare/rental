@@ -34,7 +34,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle findByuuid(String uuid) {
+    public Optional<Vehicle> findByuuid(String uuid) {
         return repository.findByuuid(uuid);
     }
 
@@ -44,8 +44,14 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle update(int id, Vehicle object) {
-        object.setId(id);
+    public Vehicle update(String uuid, Vehicle object) {
+        Optional<Vehicle> vehicle = findByuuid(uuid);
+        if(vehicle.isPresent())
+        {
+            object.setId(vehicle.get().getId());
+            repository.save(object);
+        }
+
         return repository.save(object);
     }
 
@@ -53,6 +59,19 @@ public class VehicleServiceImpl implements VehicleService {
     public boolean delete(int id) {
         try {
             Optional<Vehicle> object = repository.findById(id);
+            if (object.isPresent())
+                repository.delete(object.get());
+            return true;
+        } catch (DataAccessException e) {
+            LOGGER.info(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(String uuid) {
+        try {
+            Optional<Vehicle> object = repository.findByuuid(uuid);
             if (object.isPresent())
                 repository.delete(object.get());
             return true;
